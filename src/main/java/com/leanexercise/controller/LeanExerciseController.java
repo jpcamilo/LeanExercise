@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.leanexercise.model.Candidate;
 import com.leanexercise.model.Employee;
 import com.leanexercise.model.Position;
 import com.leanexercise.repository.LeanExerciseRepository;
 import com.leanexercise.repository.PositionRepository;
+import com.leanexercise.repository.CandidateRepository;
 
 
 @CrossOrigin(origins = "http://localhost:8081")
@@ -34,6 +36,8 @@ public class LeanExerciseController {
 	LeanExerciseRepository LeanExerciseRepository;
 	@Autowired
 	PositionRepository PositionRepository;
+	@Autowired
+	CandidateRepository CandidateRepository;
 	
 
 	@GetMapping("/LeanExercise")
@@ -42,7 +46,7 @@ public class LeanExerciseController {
 			List<Employee> Employee = new ArrayList<Employee>();
 
 			if (nombre != null) 
-				LeanExerciseRepository.findByPersonContaining(nombre).forEach(Employee::add);
+				LeanExerciseRepository.findByPersonName(nombre).forEach(Employee::add);
 			else if (cargo != null) 
 				LeanExerciseRepository.findByPositionName(cargo).forEach(Employee::add);
 			else
@@ -74,7 +78,8 @@ public class LeanExerciseController {
 		try {
 			
 			Employee _Employee = LeanExerciseRepository
-					.save(new Employee(Employee.getPerson(), Employee.getPosition().getId(), Employee.getSalary()));
+					.save(new Employee(Employee.getPerson().getId(), Employee.getPosition().getId(), Employee.getSalary()));
+			
 			return new ResponseEntity<>(_Employee, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -94,7 +99,22 @@ public class LeanExerciseController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
+////servicio exclusivo para crear el candidato///////////
+	@PostMapping("/CrearCandidato")
+	public ResponseEntity<Candidate> createCandidate(@RequestBody Candidate Person) {
+		try {
+
+			Candidate  _Person =CandidateRepository
+					.save(new Candidate(Person.getId(), Person.getName(), Person.getLasname(),
+							Person.getAddress(), Person.getCellphone(), Person.getCityname()));
+
+			return new ResponseEntity<>(_Person, HttpStatus.CREATED);
+		} catch (Exception e) {
+			System.out.println("Error al crear el candidato: "+e);
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	
 	
 	@PutMapping("/LeanExercise/{id}")

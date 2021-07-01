@@ -3,6 +3,22 @@ package com.leanexercise.model;
 import javax.persistence.*;
 
 
+/**
+ * @author PedrazJ1
+ *
+ */
+/**
+ * @author PedrazJ1
+ *
+ */
+/**
+ * @author PedrazJ1
+ *
+ */
+/**
+ * @author PedrazJ1
+ *
+ */
 @Entity
 @Table(name = "Employee")
 public class Employee {
@@ -11,8 +27,8 @@ public class Employee {
 		@GeneratedValue(strategy = GenerationType.AUTO)
 		private long id;
 
-		@Column(name = "person")
-		private String person;
+		@OneToOne
+		private Candidate person;
 		
 	    //@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	    //@JoinColumn(name = "position_id", nullable = false)
@@ -26,45 +42,35 @@ public class Employee {
 
 		}
 		
-		public Employee(String person, int position_id, int salary) {
-			this.person = person;
+		public Employee(int person_id, int position_id, int salary) {
+			this.person =  new Candidate(person_id,"","","","", "");
 			this.salary = salary;
 			this.position = new Position(position_id,"");
 		}
 
 		
-
-
-		public void setId(long id) {
-			this.id = id;
-		}
-
-		public void setPerson(String person) {
-			this.person = person;
-		}
-
-		public void setPosition(Position position) {
-			this.position = position;
-		}
-
-		public void setSalary(int salary) {
-			this.salary = salary;
-		}
-
-		public long getId() {
-			return id;
-		}
-
-		public String getPerson() {
+		public Candidate getPerson() {
 			return person;
+		}
+
+		public void setPerson(Candidate person) {
+			this.person = person;
 		}
 
 		public Position getPosition() {
 			return position;
 		}
 
+		public void setPosition(Position position) {
+			this.position = position;
+		}
+
 		public int getSalary() {
 			return salary;
+		}
+
+		public void setSalary(int salary) {
+			this.salary = salary;
 		}
 
 		//corregir
