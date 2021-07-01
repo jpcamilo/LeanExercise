@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.leanexercise.model.Employee;
+import com.leanexercise.model.Position;
 import com.leanexercise.repository.LeanExerciseRepository;
+import com.leanexercise.repository.PositionRepository;
 
 
 @CrossOrigin(origins = "http://localhost:8081")
@@ -30,6 +32,9 @@ public class LeanExerciseController {
 
 	@Autowired
 	LeanExerciseRepository LeanExerciseRepository;
+	@Autowired
+	PositionRepository PositionRepository;
+	
 
 	@GetMapping("/LeanExercise")
 	public ResponseEntity<List<Employee>> getAllEmployee(@RequestParam(required = false) String nombre, String cargo) {
@@ -39,10 +44,10 @@ public class LeanExerciseController {
 			if (nombre != null) 
 				LeanExerciseRepository.findByPersonContaining(nombre).forEach(Employee::add);
 			else if (cargo != null) 
-				LeanExerciseRepository.findByPositionContaining(cargo).forEach(Employee::add);
+				LeanExerciseRepository.findByPositionName(cargo).forEach(Employee::add);
 			else
 				LeanExerciseRepository.findAll().forEach(Employee::add);
-							
+				
 			if (Employee.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
@@ -65,16 +70,33 @@ public class LeanExerciseController {
 	}
 
 	@PostMapping("/LeanExercise")
-	public ResponseEntity<Employee> createTutorial(@RequestBody Employee Employee) {
+	public ResponseEntity<Employee> createEmployee(@RequestBody Employee Employee) {
 		try {
+			
 			Employee _Employee = LeanExerciseRepository
-					.save(new Employee(Employee.getPerson(), Employee.getPosition(), Employee.getSalary()));
+					.save(new Employee(Employee.getPerson(), Employee.getPosition().getId(), Employee.getSalary()));
 			return new ResponseEntity<>(_Employee, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
+	//////servicio exclusivo para crear cargos ded trabajo
+	@PostMapping("/CrearCargos")
+	public ResponseEntity<Position> createPosition(@RequestBody Position Position) {
+		try {
+			
+			Position  _Position = PositionRepository
+					.save(new Position(Position.getId(), Position.getName()));
+			return new ResponseEntity<>(_Position, HttpStatus.CREATED);
+		} catch (Exception e) {
+			System.out.println("Error al crear cargo: "+e);
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
+	
 	@PutMapping("/LeanExercise/{id}")
 	public ResponseEntity<Employee> updateEmployee(@PathVariable("id") long id, @RequestBody Employee Employee) {
 		Optional<Employee> EmployeeData = LeanExerciseRepository.findById(id);
