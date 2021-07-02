@@ -5,13 +5,23 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 
 @Entity
 @Table(name = "Candidate")
 public class Candidate {
+	
+	@SequenceGenerator(
+		    name="CandidateSeq",
+		    sequenceName = "CANDIDATE_SEQ",
+		    initialValue = 1, 
+		    allocationSize = 1
+	)		
+	
 	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CandidateSeq")
 	private int id;
 
 	@Column(name = "name")
@@ -33,9 +43,8 @@ public class Candidate {
 
 	}
 
-	public Candidate(int id, String name, String lasname, String address, String cellphone, String cityname) {
+	public Candidate(String name, String lasname, String address, String cellphone, String cityname) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.lasname = lasname;
 		this.address = address;
@@ -43,14 +52,19 @@ public class Candidate {
 		this.cityname = cityname;
 	}
 
+	public Candidate(int id) {
+		this.id = id;
+	}
+
 	public int getId() {
 		return id;
 	}
 
+	
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}

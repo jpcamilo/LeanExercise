@@ -2,21 +2,27 @@ package com.leanexercise.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
-
-
 
 
 
 @Entity
 @Table(name = "Position")
 public class Position {
-
+	
+	@SequenceGenerator(
+		    name="PositionSeq",
+		    sequenceName = "POSITION_SEQ",
+		    initialValue = 1, 
+		    allocationSize = 1
+	)		
+	
 	@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PositionSeq")
 	private int id;
 
 	@Column(name = "name")
@@ -29,12 +35,17 @@ public class Position {
 		
 	}
 
-	public Position(int id, String name) {
+
+
+	public Position(String name) {
 		super();
-		this.id = id;
 		this.name = name;
 	}
 
+	public Position(int id) {
+		this.id = id;
+	}
+	
 	public int getId() {
 		return id;
 	}

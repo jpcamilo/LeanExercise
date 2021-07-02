@@ -2,8 +2,10 @@ package com.leanexercise.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.hibernate.internal.build.AllowSysOut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,16 +74,25 @@ public class LeanExerciseController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-
+	//////servicio exclusivo para crear el empleado
 	@PostMapping("/LeanExercise")
 	public ResponseEntity<Employee> createEmployee(@RequestBody Employee Employee) {
 		try {
-			
+	
 			Employee _Employee = LeanExerciseRepository
-					.save(new Employee(Employee.getPerson().getId(), Employee.getPosition().getId(), Employee.getSalary()));
-			
+						.save(new Employee(Employee.getPerson().getId(), Employee.getPosition().getId(), Employee.getSalary()));
+
+			////fragmento para mostrar el empleado creado
+			 Optional<Position> position = PositionRepository.findByName(Employee.getPosition().getName());
+			 Position _Position = position.get();			
+			 Optional<Candidate> candidate = CandidateRepository.findById(Employee.getPerson().getId());
+			 Candidate _Candidate = candidate.get();			
+			 _Employee.setPerson(_Candidate);
+			 _Employee.setPosition(_Position);
+			//////////////////////////////////////
 			return new ResponseEntity<>(_Employee, HttpStatus.CREATED);
 		} catch (Exception e) {
+			System.out.println("Error al crear empleado: "+e);
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -90,10 +101,18 @@ public class LeanExerciseController {
 	@PostMapping("/CrearCargos")
 	public ResponseEntity<Position> createPosition(@RequestBody Position Position) {
 		try {
-			
-			Position  _Position = PositionRepository
-					.save(new Position(Position.getId(), Position.getName()));
-			return new ResponseEntity<>(_Position, HttpStatus.CREATED);
+
+			 Optional<Position> position = PositionRepository.findByName(Position.getName());
+			 Position _Position;
+			 if (position.isEmpty()) {
+				 _Position = PositionRepository.save(new Position(Position.getName()));
+				 return new ResponseEntity<>(_Position, HttpStatus.CREATED);
+			 }else {
+				 _Position = position.get();
+				 System.out.println("El Cargo ya se encuentra creado: "+_Position.toString());
+				 return new ResponseEntity<>(_Position, HttpStatus.CONFLICT);
+			 }
+
 		} catch (Exception e) {
 			System.out.println("Error al crear cargo: "+e);
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -106,7 +125,7 @@ public class LeanExerciseController {
 		try {
 
 			Candidate  _Person =CandidateRepository
-					.save(new Candidate(Person.getId(), Person.getName(), Person.getLasname(),
+					.save(new Candidate(Person.getName(), Person.getLasname(),
 							Person.getAddress(), Person.getCellphone(), Person.getCityname()));
 
 			return new ResponseEntity<>(_Person, HttpStatus.CREATED);
@@ -122,7 +141,16 @@ public class LeanExerciseController {
 		Optional<Employee> EmployeeData = LeanExerciseRepository.findById(id);
 
 		if (EmployeeData.isPresent()) {
+			/*
+			 * Optional<Candidate> person =
+			 * CandidateRepository.findById(Employee.getPerson().getId());
+			 * Optional<Position> position =
+			 * PositionRepository.findById(Employee.getPosition().getId()); Candidate
+			 * _Person = person.get(); Position _Position = position.get();
+			 */
+			
 			Employee _Employee = EmployeeData.get();
+			System.out.println("antes: ");
 			_Employee.setPerson(Employee.getPerson());
 			_Employee.setPosition(Employee.getPosition());
 			_Employee.setSalary(Employee.getSalary());
