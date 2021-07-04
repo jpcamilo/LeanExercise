@@ -11,7 +11,7 @@ Este es el desarrollo del ejercicio practico solicitado por XXXXX, se encuentra 
 ---
 
 - [Descripcion y Contexto](#descripcion)
-- [Consideracion de Negocio](#consideeracion-de-negocio)
+- [Consideracion de Negocio](#consideracion-de-negocio)
 - [Guía de usuario](#guía-de-usuario)
 - [Autor](#autor)
 - [Información adicional](#información-adicional)
@@ -47,7 +47,7 @@ Se tiene que comenzar con la creacion de los cargos que se van a utilizar para l
 
 ### Eliminar empleado
 Se tiene que consumir el servicio que elimina empleados y pasar el id del empleado a eliminar
-<p align="center"><img src="https://github.com/jpcamilo/LeanExercise/blob/main/img/ElimiarEmpleado.JPG"/></p> 
+<p align="center"><img src="https://github.com/jpcamilo/LeanExercise/blob/main/img/EliminarEmpleado.JPG"/></p> 
 
 ### Actualizar empleado
 Se tiene que pasar el id del empleado a actualizar y dentro del Body pasar los datos que se van a actualizar(id de la persona, id del cargo)
@@ -57,7 +57,7 @@ Se tiene que pasar el id del empleado a actualizar y dentro del Body pasar los d
 ### Listar empleado
 Se tiene que consumir el servicio que lista los empleados, si no se pasa ningun parametro adicional este, listara todos los empleados, se pueden pasar los parametros "nombre" o "cargo" con lo cual filtrara y traera unicamente los empleados con el parametros definido
 - Sin Filtro
-<p align="center"><img src="https://github.com/jpcamilo/LeanExercise/blob/main/img/ListarEmpleado.JPG"/></p> 
+<p align="center"><img src="https://github.com/jpcamilo/LeanExercise/blob/main/img/ListarEmpleados.JPG"/></p> 
 - Filtrado por Nombre
 <p align="center"><img src="https://github.com/jpcamilo/LeanExercise/blob/main/img/FiltrarNombre.JPG"/></p> 
 - Filtrado po Cargo
