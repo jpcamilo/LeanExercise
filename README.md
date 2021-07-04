@@ -5,7 +5,7 @@
 Este es el desarrollo del ejercicio practico solicitado por XXXXX, se encuentra desarrollado en Spring Boot , con BD H2, se anexa la coleccion en Postman con las pruebas realizadas al servicio.
 
 <h1 align="center"> Ejercicio Practico</h1>
-<p align="center"><img src="https://cleventy.com/wp-content/uploads/2020/05/spring-boot.png"/></p> 
+<p align="center"><img src="https://github.com/jpcamilo/LeanExercise/blob/main/img/Entidades.JPG"/></p> 
 
 ## Tabla de contenidos:
 ---
