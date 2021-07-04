@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.hibernate.internal.build.AllowSysOut;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -50,7 +51,7 @@ public class LeanExerciseController {
 			if (nombre != null) 
 				LeanExerciseRepository.findByPersonName(nombre).forEach(Employee::add);
 			else if (cargo != null) 
-				LeanExerciseRepository.findByPositionName(cargo).forEach(Employee::add);
+				LeanExerciseRepository.findByPositionName(cargo, Sort.by("Salary").descending()).forEach(Employee::add);
 			else
 				LeanExerciseRepository.findAll().forEach(Employee::add);
 				
@@ -141,16 +142,8 @@ public class LeanExerciseController {
 		Optional<Employee> EmployeeData = LeanExerciseRepository.findById(id);
 
 		if (EmployeeData.isPresent()) {
-			/*
-			 * Optional<Candidate> person =
-			 * CandidateRepository.findById(Employee.getPerson().getId());
-			 * Optional<Position> position =
-			 * PositionRepository.findById(Employee.getPosition().getId()); Candidate
-			 * _Person = person.get(); Position _Position = position.get();
-			 */
 			
 			Employee _Employee = EmployeeData.get();
-			System.out.println("antes: ");
 			_Employee.setPerson(Employee.getPerson());
 			_Employee.setPosition(Employee.getPosition());
 			_Employee.setSalary(Employee.getSalary());
@@ -182,14 +175,29 @@ public class LeanExerciseController {
 	}
 
 	@GetMapping("/LeanExercise/Cargos")
-	public ResponseEntity<List<Employee>> findByPosition() {
+	public ResponseEntity<List<Position>> findByPosition() {
 		try {
-			List<Employee> Employees = LeanExerciseRepository.findAll();///falta modificar para traer lo solicitado
+			List<Position> Position = PositionRepository.findAll();
+			
+			List<Employee> Employee = new ArrayList<Employee>();
+			
+			  for (Position position2 : Position) {
+				  System.out.println("Position name: "+position2.getName());	  
+				  LeanExerciseRepository.findByPositionName(position2.getName(),Sort.by("Salary").descending()).forEach(Employee::add);;
 
-			if (Employees.isEmpty()) {
+				  for (Employee employee2 : Employee) {
+					employee2.setPosition(null);
+				  }
+				  
+				  position2.setEmployee(Employee);
+				  Employee =new ArrayList<Employee>();
+			  }
+			 
+			
+			if (Position.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
-			return new ResponseEntity<>(Employees, HttpStatus.OK);
+			return new ResponseEntity<>(Position, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

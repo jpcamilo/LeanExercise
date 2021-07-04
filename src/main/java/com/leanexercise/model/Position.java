@@ -1,10 +1,15 @@
 package com.leanexercise.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -27,6 +32,9 @@ public class Position {
 
 	@Column(name = "name")
 	private String name;
+	
+	@ElementCollection
+	private List<Employee> employee;
 	
     //@OneToMany(mappedBy = "position", fetch = FetchType.LAZY, cascade = javax.persistence.CascadeType.ALL)
     //private Set<Employee> employees;
@@ -62,6 +70,20 @@ public class Position {
 		this.name = name;
 	}
 
-	
+
+
+	public List<Employee> getEmployee() {
+		return employee;
+	}
+
+
+
+	public void setEmployee(List<Employee> employee) {
+		this.employee = employee;
+	}
+
+
+
+
 	
 }
